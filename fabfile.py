@@ -130,5 +130,6 @@ def node_list(pattern=''):
       keepalive=60,
       warn_only=True
       ):
-        run('cd /home/%s && knife node list | grep "%s"' % (user,pattern))
+        with cd(CHEF_WORKSTATION_DIR):
+          run('knife node list | grep "%s"' % (pattern))
 
