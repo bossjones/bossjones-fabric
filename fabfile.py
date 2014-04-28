@@ -7,6 +7,7 @@ fab -f fab_log_parallel.py -R www log
 """
 
 import os
+import sys
 from fabric.api import *
 
 FABRIC_KEY_FILENAME = os.environ.get('FABRIC_KEY_FILENAME')
@@ -65,7 +66,7 @@ env.remote_interrupt = True
 
 
 @parallel
-def log():
+def log(log_file='/var/log/secure'):
     assert(env.remote_interrupt == True,env.sudo_user=="bossjones")
     with settings(
       hide('warnings', 'running', 'stderr'),
@@ -80,7 +81,7 @@ def log():
       keepalive=60,
       warn_only=True
       ):
-        sudo("sudo tail -f " + env.LOG, pty=True)
+        sudo("sudo tail -f " + log_file, pty=True)
 
 @parallel
 def who():
