@@ -183,3 +183,30 @@ def parse_nodes(pattern=''):
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(results)
 
+
+"""
+Run strace_debug script on server what a specific process is doing.
+This handles the creation of the debug dir etc.
+usage:
+fab -R besearch strace_debug:process="httpd"
+"""
+@task
+@parallel(pool_size=10)
+def strace_debug(script_path='~/dev/behanceops/scripts',process='httpd'):
+    assert(env.remote_interrupt == True)
+    with settings(
+      hide('warnings', 'running', 'stderr'),
+      parallel=True,
+      gateway=FABRIC_JUMPSERVER,
+      use_ssh_config=True,
+      forward_agent=True,
+      key_filename=FABRIC_KEY_FILENAME,
+      user=FABRIC_USER,
+      sudo_user=FABRIC_USER,
+      remote_interrupt=True,
+      keepalive=60,
+      warn_only=True
+      ):
+        run('mkdir -p /tmp/strace_debug')
+        put(script_path,'/tmp/strace_debug/strace_debug.sh')
+        sudo("sudo bash /tmp/strace_debug/strace_debug.sh %s" % (process))
