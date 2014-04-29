@@ -208,5 +208,5 @@ def strace_debug(script_path='~/dev/behanceops/scripts',process='httpd'):
       warn_only=True
       ):
         run('mkdir -p /tmp/strace_debug')
-        put(script_path,'/tmp/strace_debug/strace_debug.sh')
+        put(script_path,'/tmp/strace_debug/strace_debug.sh', mode=0755)
         sudo("sudo bash /tmp/strace_debug/strace_debug.sh %s" % (process))
