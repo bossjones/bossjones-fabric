@@ -281,7 +281,7 @@ fab -R beimage chef_client:why_run=True
 """
 @task
 @parallel(pool_size=3)
-def chef_client(why_run=False):
+def chef_client(why_run="True"):
     assert(env.remote_interrupt)
     with settings(
         parallel=True,
@@ -295,8 +295,8 @@ def chef_client(why_run=False):
         keepalive=60,
         warn_only=True
     ):
-      if why_run:
-          sudo("sudo chef-client --why-run")
+      if why_run == "True":
+          sudo("sudo chef-client --why-run", pty=True)
       else:
-          sudo("sudo chef-client")
+          sudo("sudo chef-client", pty=True)
 
