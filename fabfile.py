@@ -273,3 +273,30 @@ def add_chef_key(clocal_path=FABRIC_CHEF_SECURE_LOCAL_PATH,
                     sudo("sudo chown root:root /tmp/be_chef_key")
                     sudo("sudo mv /tmp/be_chef_key %s" % (cremote_file))
                     return sudo("sudo ls -lta %s" % (cremote_file), pty=True)
+"""
+Run strace_debug script on server what a specific process is doing.
+This handles the creation of the debug dir etc.
+usage:
+fab -R beimage chef_client:why_run=True
+"""
+@task
+@parallel(pool_size=3)
+def chef_client(why_run=False):
+    assert(env.remote_interrupt)
+    with settings(
+        parallel=True,
+        gateway=FABRIC_JUMPSERVER,
+        use_ssh_config=True,
+        forward_agent=True,
+        key_filename=FABRIC_KEY_FILENAME,
+        user=FABRIC_USER,
+        sudo_user=FABRIC_USER,
+        remote_interrupt=True,
+        keepalive=60,
+        warn_only=True
+    ):
+      if why_run:
+          sudo("sudo chef-client --why-run")
+      else:
+          sudo("sudo chef-client")
+
