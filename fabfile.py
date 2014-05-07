@@ -234,14 +234,14 @@ usage:
 fab node_list:pattern='benet'
 """
 
-
 @task
-@roles('bescarlett')
+#@roles('bescarlett')
+@parallel(pool_size=3)
 def add_chef_key(clocal_path=FABRIC_CHEF_SECURE_LOCAL_PATH,
                  cremote_path=FABRIC_CHEF_SECURE_REMOTE_PATH,
                  cremote_file=FABRIC_CHEF_REMOTE_FILE,
                  clocal_file=FABRIC_CHEF_LOCAL_FILE,
-                 dryrun=True):
+                 dryrun="True"):
     assert(env.remote_interrupt)
     with settings(
         hide('warnings'),
@@ -256,7 +256,7 @@ def add_chef_key(clocal_path=FABRIC_CHEF_SECURE_LOCAL_PATH,
         keepalive=60,
         warn_only=True
     ):
-        if dryrun:
+        if dryrun == "True":
             with cd('opt'):
                 run("file %s" % (cremote_path))
                 print "pretend to get local file: %s" % (clocal_path)
@@ -274,8 +274,7 @@ def add_chef_key(clocal_path=FABRIC_CHEF_SECURE_LOCAL_PATH,
                     sudo("sudo mv /tmp/be_chef_key %s" % (cremote_file))
                     return sudo("sudo ls -lta %s" % (cremote_file), pty=True)
 """
-Run strace_debug script on server what a specific process is doing.
-This handles the creation of the debug dir etc.
+chef-client command
 usage:
 fab -R beimage chef_client:why_run=True
 """
