@@ -279,7 +279,7 @@ usage:
 fab -R beimage chef_client:why_run=True
 """
 @task
-@parallel(pool_size=3)
+@parallel(pool_size=10)
 def chef_client(why_run="True"):
     assert(env.remote_interrupt)
     with settings(
